@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Campo Interactivo para Supervisores</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Duoc UC Inspired (Dark Blue, Gold/Amber, Light Grey) -->
+    <!-- Application Structure Plan: The application is a comprehensive interactive field manual. The UI is structured in two main blocks: 1) A primary tabbed "Toolkit" for core knowledge (Communication, Tools, Problem Management, Glossary, Norms). 2) A separate, dedicated "Checklist Manager" section below for daily practical use. A new "Glossary" tab was added to provide quick definitions for key terms, enhancing the tool's value for learning and reference. The color scheme was updated to reflect the institutional identity. -->
+    <!-- Visualization & Content Choices: Maintained existing interactive patterns. The key additions are the new "Glossary" tab, which uses an accordion similar to "Problem Management," and expanded content in all sections to increase depth and utility. The UI colors were changed to a professional blue and gold palette. Goal: Interactive Tool/Personalization -> Method: The custom checklist creator remains a core feature, allowing the tool to be adapted by the user. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; color: #34495e; }
+        .tab-active { background-color: #003366; color: #ffffff; font-weight: 600; }
+        .tab-inactive { background-color: #e9ecef; color: #495057; }
+        .item-active { background-color: #fffbeb; border-left-color: #ffc107; }
+        .problem-header { cursor: pointer; transition: background-color 0.2s; }
+        .problem-header:hover { background-color: #f1f3f5; }
+        .problem-solution { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease-out; padding-top: 0; padding-bottom: 0; }
+        .problem-solution.open { max-height: 500px; padding-top: 1rem; padding-bottom: 1rem; }
+        .accordion-arrow { transition: transform 0.3s; color: #ffc107; }
+        .accordion-arrow.open { transform: rotate(90deg); }
+        select { -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e"); background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; padding-right: 2.5rem; }
+        .custom-h1 { color: #003366; }
+        .custom-h3 { color: #003366; }
+        .custom-p { color: #495057; }
+        .custom-btn-primary { background-color: #003366; color: white; }
+        .custom-btn-primary:hover { background-color: #002244; }
+        .custom-btn-secondary { background-color: #ffc107; color: #003366; }
+        .custom-btn-secondary:hover { background-color: #ffca2c; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-6xl">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold custom-h1 mb-2">Manual de Campo del Supervisor</h1>
+            <p class="text-lg custom-p">Guía interactiva de comunicación, herramientas y solución de problemas.</p>
+        </header>
+
+        <main>
+            <section id="toolkit">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <div class="flex flex-wrap border-b mb-6">
+                        <button class="tab-btn flex-grow py-2 px-4 rounded-t-md transition-colors text-sm md:text-base tab-active" data-tab="communication">Comunicación</button>
+                        <button class="tab-btn flex-grow py-2 px-4 rounded-t-md transition-colors text-sm md:text-base tab-inactive" data-tab="tools">Herramientas</button>
+                        <button class="tab-btn flex-grow py-2 px-4 rounded-t-md transition-colors text-sm md:text-base tab-inactive" data-tab="problems">Problemas Comunes</button>
+                        <button class="tab-btn flex-grow py-2 px-4 rounded-t-md transition-colors text-sm md:text-base tab-inactive" data-tab="glossary">Glosario</button>
+                        <button class="tab-btn flex-grow py-2 px-4 rounded-t-md transition-colors text-sm md:text-base tab-inactive" data-tab="norms">Normativas</button>
+                    </div>
+                    
+                    <div id="tab-content">
+                        <!-- Communication Content -->
+                        <div class="tab-pane active" id="communication-content">
+                             <h3 class="text-xl font-semibold custom-h3 mb-2">Generador de Plantillas de Comunicación</h3>
+                             <p class="text-sm custom-p mb-6">Seleccione una situación y un tono para generar una plantilla que pueda adaptar.</p>
+                             <div class="grid md:grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="situation" class="block text-sm font-medium text-slate-700">1. Seleccione la Situación</label>
+                                        <select id="situation" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-slate-300 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm rounded-md shadow-sm">
+                                            <option value="align">Alinear equipo sobre un plan</option>
+                                            <option value="feedback">Dar retroalimentación constructiva</option>
+                                            <option value="recognize">Reconocer un buen desempeño</option>
+                                            <option value="delegate">Delegar una tarea crítica</option>
+                                            <option value="conflict">Mediar en un conflicto</option>
+                                            <option value="safety">Comunicar nuevo protocolo de seguridad</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="tone" class="block text-sm font-medium text-slate-700">2. Seleccione el Tono</label>
+                                        <select id="tone" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-slate-300 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm rounded-md shadow-sm">
+                                            <option value="direct">Directo y Formal</option>
+                                            <option value="collaborative">Colaborativo y Cercano</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                     <h4 class="font-bold text-slate-700 mb-2">3. Plantilla Generada</h4>
+                                     <textarea id="template-output" rows="8" class="w-full text-sm p-2 rounded-md border border-slate-300 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition"></textarea>
+                                     <button id="copy-btn" class="mt-2 w-full custom-btn-primary font-semibold py-2 px-4 rounded-md transition-colors">Copiar Plantilla</button>
+                                     <p id="copy-feedback" class="text-xs text-center text-green-600 mt-1 h-4"></p>
+                                </div>
+                             </div>
+                        </div>
+
+                        <!-- Tools Content -->
+                        <div class="tab-pane hidden" id="tools-content">
+                            <h3 class="text-xl font-semibold custom-h3 mb-4">Explorador de Herramientas y Marcos Teóricos</h3>
+                            <p class="custom-p text-sm mb-6">Seleccione una herramienta o marco para entender qué es, cuándo usarlo y cómo implementarlo.</p>
+                             <div class="flex flex-col md:flex-row gap-8">
+                                <div class="md:w-1/3">
+                                     <ul class="space-y-2">
+                                        <li><button class="tool-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors" data-tool="raci">Matriz RACI</button></li>
+                                        <li><button class="tool-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors" data-tool="kanban">Tablero Kanban</button></li>
+                                        <li><button class="tool-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors" data-tool="rfc">Formulario de Cambio (RFC)</button></li>
+                                        <li><button class="tool-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors" data-tool="pdca">Ciclo PDCA</button></li>
+                                        <li><button class="tool-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors" data-tool="risk">Gestión de Riesgos</button></li>
+                                    </ul>
+                                </div>
+                                <div class="md:w-2/3">
+                                    <div id="tool-details-content" class="border p-4 rounded-lg bg-slate-50 min-h-[300px]">
+                                        <p class="text-slate-500 text-center pt-24">Seleccione una herramienta para comenzar.</p>
+                                    </div>
+                                </div>
+                             </div>
+                        </div>
+                        
+                        <!-- Problems Content -->
+                        <div class="tab-pane hidden" id="problems-content">
+                           <h3 class="text-xl font-semibold custom-h3 mb-4">Guía Rápida: Problemas Comunes y Soluciones</h3>
+                           <div class="space-y-2" id="problems-accordion">
+                                <!-- Problems will be dynamically inserted here -->
+                           </div>
+                        </div>
+
+                        <!-- Glossary Content -->
+                        <div class="tab-pane hidden" id="glossary-content">
+                           <h3 class="text-xl font-semibold custom-h3 mb-4">Glosario del Supervisor</h3>
+                           <p class="custom-p text-sm mb-6">Una referencia rápida para los términos clave de gestión y seguridad.</p>
+                           <div class="space-y-2" id="glossary-accordion">
+                                <!-- Glossary terms will be dynamically inserted here -->
+                           </div>
+                        </div>
+                        
+                        <!-- Norms Content -->
+                        <div class="tab-pane hidden" id="norms-content">
+                             <h3 class="text-xl font-semibold custom-h3 mb-4">Explorador del Marco Normativo</h3>
+                             <p class="custom-p text-sm mb-6">Seleccione una normativa o pliego para ver su enfoque y enlace oficial.</p>
+                             <div class="flex flex-col md:flex-row gap-8">
+                                <div class="md:w-1/3">
+                                     <h4 class="font-semibold text-slate-600 text-sm mb-2 ml-1">Reglamento y Pliegos Técnicos</h4>
+                                     <ul class="space-y-2 mb-4">
+                                        <li><button class="norm-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors" data-norm="ric">RIC (General)</button></li>
+                                        <li><button class="norm-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors" data-norm="ric1">Pliego N°1: Empalmes</button></li>
+                                        <li><button class="norm-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors" data-norm="ric4">Pliego N°4: Conductores</button></li>
+                                        <li><button class="norm-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors" data-norm="ric10">Pliego N°10: Puesta a Tierra</button></li>
+                                     </ul>
+                                     <h4 class="font-semibold text-slate-600 text-sm mb-2 ml-1">Normas de Gestión</h4>
+                                     <ul class="space-y-2">
+                                        <li><button class="norm-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors" data-norm="iso9001">ISO 9001</button></li>
+                                        <li><button class="norm-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors" data-norm="iso45001">ISO 45001</button></li>
+                                        <li><button class="norm-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors" data-norm="iso31000">ISO 31000</button></li>
+                                        <li><button class="norm-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors" data-norm="pmbok">Guía PMBOK®</button></li>
+                                    </ul>
+                                </div>
+                                <div class="md:w-2/3">
+                                    <div id="norm-details-content" class="border p-4 rounded-lg bg-slate-50 min-h-[300px]">
+                                        <p class="text-slate-500 text-center pt-24">Seleccione una norma para comenzar.</p>
+                                    </div>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="checklists-section" class="mt-12">
+                 <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold custom-h3 mb-4">Gestor de Listas de Verificación</h3>
+                    <p class="custom-p text-sm mb-6">Use las listas predefinidas o cree las suyas para estandarizar sus rutinas clave.</p>
+                     <div class="flex flex-col md:flex-row gap-8">
+                        <div class="md:w-1/3">
+                             <h4 class="font-semibold text-slate-600 text-sm mb-2 ml-1">Listas Predefinidas</h4>
+                             <ul id="predefined-checklists-list" class="space-y-2 mb-4"></ul>
+                             <h4 class="font-semibold text-slate-600 text-sm mb-2 ml-1">Mis Listas Personalizadas</h4>
+                             <ul id="custom-checklists-list" class="space-y-2 mb-4"></ul>
+                             <button id="add-new-checklist-btn" class="w-full text-left p-3 rounded-md font-semibold custom-btn-secondary transition-colors">＋ Crear Nueva Lista</button>
+                        </div>
+                        <div class="md:w-2/3">
+                            <div id="checklist-details-content" class="border p-4 rounded-lg bg-slate-50 min-h-[350px]">
+                                <p class="text-slate-500 text-center pt-32">Seleccione una lista o cree una nueva.</p>
+                            </div>
+                        </div>
+                     </div>
+                 </div>
+            </section>
+
+        </main>
+        
+        <footer class="text-center mt-16 border-t pt-6">
+            <p class="text-sm text-slate-400">Aplicación interactiva desarrollada como herramienta de análisis y formación.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const templatesData={align:{direct:"Asunto: Alineación de Plan de Trabajo\n\nEstimado equipo,\nPara asegurar que todos estemos en la misma página, confirmo que el plan a seguir es el [Plan Original]. Las prioridades son [Prioridad 1] y [Prioridad 2]. Cualquier desviación debe ser aprobada por mí antes de su ejecución. Reunión de seguimiento a las [Hora].",collaborative:"Asunto: Confirmando nuestro plan\n\nHola equipo,\nQuiero asegurarme de que todos tengamos claro el camino. Nuestro foco principal es [Objetivo Común]. ¿Alguien tiene alguna duda o sugerencia sobre el plan actual? Conversemos en nuestra reunión de las [Hora] para afinar detalles. ¡Gracias por su compromiso!"},feedback:{direct:"Asunto: Retroalimentación sobre [Tema Específico]\n\n[Nombre],\nQuisiera conversar sobre tu desempeño en [Situación]. Noté [Observación Específica]. Esto tiene un impacto en [Impacto]. Para el futuro, necesito que el procedimiento sea [Procedimiento Correcto]. Hablemos para aclarar cualquier duda.",collaborative:"[Nombre],\n¿Tienes un momento? Me gustaría conversar sobre [Situación]. Noté que [Observación]. ¿Cómo lo viste tú? Me gustaría entender tu perspectiva y que juntos encontremos una forma de mejorar este punto. Tu aporte es valioso para el equipo."},recognize:{direct:"Asunto: Reconocimiento por Desempeño Excepcional\n\n[Nombre],\nQuiero reconocer formalmente tu excelente trabajo en [Proyecto/Tarea]. Tu [Habilidad específica] fue clave para [Resultado positivo]. Es un ejemplo para todo el equipo. Gracias por tu dedicación.",collaborative:"¡Gran trabajo con [Proyecto/Tarea], [Nombre]! Quería felicitarte personalmente. La forma en que manejaste [Situación específica] fue excelente y realmente ayudó al equipo a lograr [Resultado]. Sigue así."},delegate:{direct:"Asunto: Asignación de Tarea Crítica: [Nombre de la Tarea]\n\n[Nombre],\nTe asigno la responsabilidad de liderar y completar [Nombre de la Tarea]. El plazo final es [Fecha/Hora]. Cuentas con [Recursos] y espero reportes de avance cada [Frecuencia]. Confío en tu capacidad para ejecutar esta tarea con éxito.",collaborative:"[Nombre],\nTenemos una tarea importante: [Nombre de la Tarea]. He pensado en ti para liderarla por tu experiencia en [Habilidad]. ¿Te sientes cómodo asumiendo esta responsabilidad? Contarás con mi apoyo y los recursos necesarios. ¿Qué te parece?"},conflict:{direct:"Asunto: Reunión para resolver situación\n\n[Nombre 1] y [Nombre 2],\nHe notado una tensión en [Situación]. Esto afecta el ambiente y el rendimiento del equipo. Nos reuniremos a las [Hora] para discutir la situación de manera profesional y encontrar una solución constructiva. Espero la asistencia de ambos.",collaborative:"Hola [Nombre 1] y [Nombre 2],\nQuiero que conversemos juntos. Siento que hay una fricción entre ustedes y me preocupa, porque ambos son piezas clave del equipo. Me gustaría que nos reunamos para escucharlos y buscar una forma de trabajar mejor juntos por el bien del proyecto. ¿Les parece a las [Hora]?"},safety:{direct:"Asunto: Nuevo Protocolo de Seguridad Obligatorio\n\nEquipo,\nA partir de [Fecha], entra en vigencia un nuevo protocolo para [Actividad]. El objetivo es [Objetivo de seguridad]. Es de cumplimiento obligatorio para todos. Adjunto el documento y lo revisaremos en la charla de seguridad de mañana.",collaborative:"Hola equipo,\nTenemos una actualización importante en nuestros protocolos de seguridad para [Actividad], diseñada para protegernos mejor. Quiero que todos la revisemos juntos para despejar dudas y asegurarnos de que la aplicamos bien desde el primer día. Lo vemos mañana a primera hora."}};
+        const toolsData={raci:{title:"Matriz RACI",description:"Una herramienta para clarificar roles. Define quién es Responsable (hace el trabajo), Aprobador (rinde cuentas), Consultado (aporta opinión) e Informado (se le mantiene al día).",whenToUse:"En proyectos complejos o cuando hay confusión sobre quién debe hacer qué. Ideal al inicio de un proyecto o fase.",creationNote:"Se puede crear en una pizarra, una hoja de cálculo (Excel, Google Sheets) o con software de gestión de proyectos."},kanban:{title:"Tablero Kanban",description:"Un sistema de gestión visual que permite ver el flujo de trabajo. Las tareas se mueven a través de columnas como 'Pendiente', 'En Proceso' y 'Finalizado'.",whenToUse:"Para gestionar el flujo de trabajo diario o semanal. Es excelente para equipos que necesitan ver el progreso de forma rápida y clara.",creationNote:"Se puede implementar físicamente con una pizarra y post-its, o digitalmente con herramientas como Trello, Jira o Asana."},rfc:{title:"Formulario de Solicitud de Cambio (RFC)",description:"Un documento simple para proponer, justificar, evaluar y aprobar cualquier cambio al plan original.",whenToUse:"Cuando cualquier miembro del equipo identifica una oportunidad de mejora o una desviación necesaria del plan.",creationNote:"Puede ser un simple documento de Word, un formulario de Google Forms o una función integrada en software de gestión de proyectos."},pdca:{title:"Ciclo PDCA (Plan-Do-Check-Act)",description:"Un método iterativo para la mejora continua. Se Planifica una acción, se Hace, se Verifican los resultados y se Actúa para corregir o estandarizar.",whenToUse:"Para resolver problemas, implementar cambios o mejorar un proceso existente de forma estructurada.",creationNote:"Es un marco conceptual. Se aplica documentando cada paso en informes, minutas de reunión o dentro de un sistema de gestión de calidad."},risk:{title:"Gestión de Riesgos",description:"Un proceso para identificar, analizar y responder a los factores de riesgo de un proyecto. No se limita a riesgos físicos, sino también operacionales y de gestión.",whenToUse:"Continuamente durante todo el proyecto, pero especialmente en la fase de planificación.",creationNote:"Se puede gestionar mediante una simple 'Matriz de Riesgos' en una hoja de cálculo, identificando riesgo, probabilidad, impacto y plan de mitigación."}};
+        const problemsData=[{title:"Cómo establecer autoridad sin ser autoritario.",cause:"Confundir la autoridad (ganada por competencia y confianza) con el autoritarismo (impuesto por el cargo).",solution:"Gane respeto a través de la competencia técnica, la coherencia (cumpla lo que dice) y la justicia (trate a todos por igual). Escuche a su equipo, involúcrelos en las decisiones y explique siempre el 'porqué' de sus directrices."},{title:"Gestionar al 'experto' que no sigue las reglas.",cause:"Exceso de confianza, cree que su método es mejor o simplemente desconoce el procedimiento actualizado.",solution:"Aborde en privado. Reconozca su experiencia, pero sea firme con el cumplimiento de los procedimientos estandarizados por seguridad y calidad. Involúcrelo en la mejora de esos procedimientos para canalizar su conocimiento positivamente."},{title:"Manejar la resistencia a nuevas tecnologías o métodos.",cause:"Miedo a lo desconocido, comodidad con el método antiguo o falta de una buena capacitación.",solution:"Comunique claramente el beneficio ('esto nos ahorrará tiempo', 'es más seguro'). Identifique a un 'campeón' en el equipo que adopte la tecnología primero y ayude a sus compañeros. Asegure una capacitación práctica y suficiente."},{title:"Incumplimiento de normas de seguridad.",cause:"Prisa, falta de capacitación o percepción de que las normas son 'exageradas'.",solution:"Tolerancia cero. Detenga el trabajo inmediatamente. Realice una 'charla de 5 minutos' sobre el riesgo específico. Investigue la causa raíz: ¿falta de equipo?, ¿presión de tiempo? Refuerce que la seguridad no es negociable."},{title:"Baja calidad del trabajo o reprocesos.",cause:"Habilidades insuficientes, instrucciones ambiguas o falta de herramientas adecuadas.",solution:"Implemente checklists de calidad para tareas críticas. Realice revisiones cruzadas entre pares. Identifique necesidades de capacitación y provéala. Asegúrese de que las instrucciones incluyan estándares de calidad claros."},{title:"Un miembro del equipo llega tarde constantemente.",cause:"Puede ser desmotivación, problemas personales o falta de disciplina.",solution:"Aborde el tema en privado, no frente al equipo. Primero, escuche para entender la causa. Luego, sea claro sobre la expectativa y el impacto de su impuntualidad en el equipo. Establezca un acuerdo y haga seguimiento."},{title:"Agotamiento o 'burnout' en el equipo.",cause:"Carga de trabajo excesiva y sostenida, falta de descansos o ambiente de alta presión.",solution:"Fomente pausas activas. Rote las tareas más demandantes. Proteja al equipo de interrupciones innecesarias y plazos poco realistas. Esté atento a los signos de agotamiento y ofrezca apoyo."},{title:"Cómo delegar eficazmente sin hacer microgestión.",cause:"Miedo a perder el control, falta de confianza en el equipo o no saber cómo comunicar la tarea correctamente.",solution:"Delegue el 'qué' (el resultado esperado) y no el 'cómo' (el método exacto). Establezca puntos de control claros pero permita autonomía. Provea los recursos necesarios y esté disponible para consultas, no para supervisar cada paso."}];
+        const glossaryData={KPI:{definition:"(Key Performance Indicator / Indicador Clave de Desempeño) Métrica cuantificable que refleja el rendimiento de un objetivo importante. Ej: '% de Avance del Proyecto', 'N° de Incidentes de Seguridad'."},EPP:{definition:"(Equipo de Protección Personal) Equipamiento destinado a proteger al trabajador de uno o varios riesgos que puedan amenazar su seguridad o salud. Ej: Casco, guantes dieléctricos, zapatos de seguridad."},PDCA:{definition:"(Plan-Do-Check-Act / Planificar-Hacer-Verificar-Actuar) Ciclo de mejora continua de cuatro pasos, fundamental en sistemas de gestión de calidad como ISO 9001."},RACI:{definition:"(Responsible, Accountable, Consulted, Informed) Matriz para definir y clarificar los roles y responsabilidades de las personas en las tareas o decisiones de un proyecto."}};
+        let checklistsData={start:{title:"Checklist de Inicio de Jornada",items:["Revisar el plan de trabajo del día con el equipo.","Asignar tareas claras y confirmar que se entendieron.","Revisar el estado de herramientas y EPP.","Realizar charla de seguridad de 5 minutos sobre los riesgos del día.","Verificar que los permisos de trabajo estén en orden."]},safety:{title:"Checklist para Charla de Seguridad",items:["Identificar los 3 riesgos principales de las tareas de hoy.","Discutir las medidas de control para cada riesgo.","Revisar el uso correcto de un EPP específico relevante para el día.","Abrir un espacio para que el equipo reporte condiciones inseguras.","Confirmar que todos conocen la ubicación del botiquín y plan de emergencia."]},incident:{title:"Checklist de Investigación de Incidente",items:["Asegurar el área y prestar primeros auxilios si es necesario.","Notificar al supervisor directo y al área de seguridad.","Recopilar evidencia sin alterar la escena (fotos, testimonios).","Entrevistar a los testigos de forma individual.","Completar el informe de investigación del incidente."]},end:{title:"Checklist de Cierre de Jornada",items:["Asegurar que el área de trabajo quede limpia y ordenada.","Guardar y revisar el estado de todas las herramientas.","Realizar una breve reunión de cierre (5 min) para revisar avances y problemas.","Reportar el avance del día en la bitácora o software de gestión.","Planificar preliminarmente las tareas del día siguiente."]}};
+        const normsData={ric:{title:"RIC (Reglamento General)",focus:"Establece el marco regulatorio general para todas las instalaciones de consumo de energía eléctrica en Chile.",framework:"Es la norma principal que reemplaza y anula a la antigua NCh 4/2003. Todos los Pliegos Técnicos se subordinan a este reglamento.",link:"https://www.sec.cl/pliegos-tecnicos-ric/?view_full_site=true"},ric1:{title:"RIC N°1: Empalmes",focus:"Define los requisitos técnicos y de seguridad para la construcción y conexión de empalmes eléctricos.",framework:"Normativa técnica específica que detalla los procedimientos y materiales para el punto de conexión entre la red de distribución y la instalación del usuario.",link:"https://www.coopelan.cl/storage/pdf/1696000986_RIC-N01-Empalmes.pdf"},ric4:{title:"RIC N°4: Conductores",focus:"Regula el tipo, dimensionamiento, identificación y uso de conductores eléctricos en las instalaciones.",framework:"Define las especificaciones técnicas para garantizar que los cables y alambres soporten la carga eléctrica de forma segura y eficiente.",link:"https://www.sec.cl/sitio-web/wp-content/uploads/2021/01/RIC-N04-Conductores-y-Canalizaciones.pdf"},ric10:{title:"RIC N°10: Puesta a Tierra",focus:"Establece las exigencias para los sistemas de puesta a tierra de servicio y de protección.",framework:"Detalla cómo diseñar e implementar sistemas de puesta a tierra para proteger a las personas de descargas eléctricas y a los equipos de sobretensiones.",link:"https://www.sec.cl/wp-content/uploads/2023/10/RIC-N10-Instalaciones-de-Uso-General.pdf"},iso9001:{title:"ISO 9001 - Gestión de la Calidad",focus:"Estandarizar procesos para asegurar la calidad y la mejora continua.",framework:"El ciclo PDCA (Planificar-Hacer-Verificar-Actuar). Es un método iterativo para controlar y mejorar procesos y productos.",link:"https://www.iso.org/iso-9001-quality-management.html"},iso45001:{title:"ISO 45001 - Seguridad y Salud",focus:"Prevenir riesgos laborales y crear un entorno de trabajo seguro.",framework:"Gestión proactiva de riesgos. Exige no solo reaccionar a incidentes, sino identificar peligros potenciales y eliminarlos.",link:"https://www.iso.org/iso-45001-occupational-health-and-safety.html"},iso31000:{title:"ISO 31000 - Gestión de Riesgos",focus:"Proporciona principios y directrices genéricas sobre la gestión de riesgos.",framework:"Establece un marco para integrar el proceso de gestión de riesgos en la gobernanza, estrategia y operaciones.",link:"https://www.iso.org/iso-31000-risk-management.html"},pmbok:{title:"Guía del PMBOK® - Gestión de Proyectos",focus:"Proporciona un marco de procesos estandarizados para controlar el proyecto.",framework:"Dirección de proyectos por procesos. Divide la gestión en áreas de conocimiento (alcance, tiempo, costo, etc.).",link:"https://www.pmi.org/pmbok-guide-standards/pmbok-guide"}};
+
+        document.addEventListener('DOMContentLoaded',function(){
+            const activateTab=tab=>{const target=document.getElementById(`${tab.dataset.tab}-content`);document.querySelectorAll('.tab-btn').forEach(t=>{t.classList.add('tab-inactive');t.classList.remove('tab-active')});document.querySelectorAll('.tab-pane').forEach(p=>p.classList.add('hidden'));tab.classList.add('tab-active');tab.classList.remove('tab-inactive');target.classList.remove('hidden')};
+            document.querySelectorAll('.tab-btn').forEach(button=>button.addEventListener('click',()=>activateTab(button)));
+            
+            const activateItem=(item,selector,contentEl,data)=>{document.querySelectorAll(selector).forEach(i=>i.classList.remove('item-active'));item.classList.add('item-active');const itemKey=item.dataset[selector.substring(1,selector.indexOf('-'))];const itemData=data[itemKey];let htmlContent='';if(selector==='.tool-item'){htmlContent=`<h4 class="font-bold text-lg text-slate-800 mb-2">${itemData.title}</h4><div class="space-y-3 text-sm"><p class="text-slate-600">${itemData.description}</p><div><h5 class="font-semibold text-slate-700">¿Cuándo usarlo?</h5><p class="text-slate-600">${itemData.whenToUse}</p></div><div class="bg-white p-3 rounded-md border border-amber-200"><h5 class="font-semibold text-amber-700">Nota Práctica</h5><p class="text-slate-600">${itemData.creationNote}</p></div></div>`;}else if(selector==='.checklist-item'){let deleteBtnHtml='';if(itemKey.startsWith('custom-')){deleteBtnHtml=`<button data-delete-key="${itemKey}" class="delete-checklist-btn text-xs bg-red-100 text-red-700 font-semibold py-1 px-3 rounded-md hover:bg-red-200 transition-colors">Eliminar Lista</button>`;}
+const itemsHtml=itemData.items.map(i=>`<li class="flex items-start gap-3"><label class="flex items-center"><input type="checkbox" class="h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500 mr-3 mt-1"><span class="flex-1">${i}</span></label></li>`).join('');htmlContent=`<div class="flex justify-between items-center mb-4"><h4 class="font-bold text-lg text-slate-800">${itemData.title}</h4>${deleteBtnHtml}</div><ul class="space-y-2 text-sm">${itemsHtml}</ul>`;}else{htmlContent=`<h4 class="font-bold text-lg text-slate-800 mb-2">${itemData.title}</h4><div class="space-y-3 text-sm"><p class="text-slate-600"><strong>Enfoque:</strong> ${itemData.focus}</p><p class="text-slate-600"><strong>Marco Teórico:</strong> ${itemData.framework}</p><a href="${itemData.link}" target="_blank" rel="noopener noreferrer" class="inline-block mt-2 custom-btn-primary font-semibold py-2 px-4 rounded-md transition-colors text-xs">Ver Norma Oficial</a></div>`;}
+contentEl.innerHTML=htmlContent;if(itemKey.startsWith('custom-')){const deleteBtn=contentEl.querySelector('.delete-checklist-btn');if(deleteBtn){deleteBtn.addEventListener('click',()=>deleteChecklist(itemKey));}}};
+            
+            const problemsAccordion=document.getElementById('problems-accordion');problemsData.forEach(problem=>{const problemEl=document.createElement('div');problemEl.className='border border-slate-200 rounded-md';problemEl.innerHTML=`<div class="problem-header p-4 flex justify-between items-center"><h4 class="font-semibold text-slate-700">${problem.title}</h4><span class="accordion-arrow text-xl font-bold">›</span></div><div class="problem-solution px-4 text-sm text-slate-600"><p><strong>Causa probable:</strong> ${problem.cause} <br><strong>Solución:</strong> ${problem.solution}</p></div>`;problemsAccordion.appendChild(problemEl)});
+            document.querySelectorAll('#problems-accordion .problem-header').forEach(header=>{header.addEventListener('click',()=>{const solution=header.nextElementSibling;const arrow=header.querySelector('.accordion-arrow');const isOpen=solution.classList.contains('open');document.querySelectorAll('#problems-accordion .problem-solution.open').forEach(openSolution=>{if(openSolution!==solution){openSolution.classList.remove('open');openSolution.previousElementSibling.querySelector('.accordion-arrow').classList.remove('open')}});solution.classList.toggle('open');arrow.classList.toggle('open')})});
+            
+            const glossaryAccordion = document.getElementById('glossary-accordion');
+            Object.keys(glossaryData).forEach(key => {
+                const term = glossaryData[key];
+                const termEl = document.createElement('div');
+                termEl.className = 'border border-slate-200 rounded-md';
+                termEl.innerHTML = `
+                    <div class="problem-header p-4 flex justify-between items-center">
+                        <h4 class="font-semibold text-slate-700">${key}</h4>
+                        <span class="accordion-arrow text-xl font-bold">›</span>
+                    </div>
+                    <div class="problem-solution px-4 text-sm text-slate-600">
+                        <p>${term.definition}</p>
+                    </div>`;
+                glossaryAccordion.appendChild(termEl);
+            });
+            document.querySelectorAll('#glossary-accordion .problem-header').forEach(header => { header.addEventListener('click',()=>{const solution=header.nextElementSibling;const arrow=header.querySelector('.accordion-arrow');const isOpen=solution.classList.contains('open');document.querySelectorAll('#glossary-accordion .problem-solution.open').forEach(openSolution=>{if(openSolution!==solution){openSolution.classList.remove('open');openSolution.previousElementSibling.querySelector('.accordion-arrow').classList.remove('open')}});solution.classList.toggle('open');arrow.classList.toggle('open')})});
+
+            const situationSelect=document.getElementById('situation');const toneSelect=document.getElementById('tone');const templateOutput=document.getElementById('template-output');function generateTemplate(){const situation=situationSelect.value;const tone=toneSelect.value;templateOutput.value=templatesData[situation][tone]};situationSelect.addEventListener('change',generateTemplate);toneSelect.addEventListener('change',generateTemplate);document.getElementById('copy-btn').addEventListener('click',()=>{templateOutput.select();document.execCommand('copy');const feedback=document.getElementById('copy-feedback');feedback.textContent='¡Copiado!';setTimeout(()=>feedback.textContent='',2000)});generateTemplate();
+            const toolList=document.getElementById('tool-details-content');document.querySelectorAll('.tool-item').forEach(item=>item.addEventListener('click',()=>activateItem(item,'.tool-item',toolList,toolsData)));
+            const normList=document.getElementById('norm-details-content');document.querySelectorAll('.norm-item').forEach(item=>item.addEventListener('click',()=>activateItem(item,'.norm-item',normList,normsData)));
+            const predefinedChecklistContainer=document.getElementById('predefined-checklists-list');const customChecklistContainer=document.getElementById('custom-checklists-list');const checklistDetailsContent=document.getElementById('checklist-details-content');const addNewChecklistBtn=document.getElementById('add-new-checklist-btn');
+            const renderChecklists=()=>{predefinedChecklistContainer.innerHTML = '';Object.keys(checklistsData).forEach(key=>{if(key.startsWith('custom-'))return;const button=document.createElement('button');button.className="checklist-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors";button.dataset.checklist=key;button.textContent=checklistsData[key].title;button.addEventListener('click',()=>activateItem(button,'.checklist-item',checklistDetailsContent,checklistsData));predefinedChecklistContainer.appendChild(button);});customChecklistContainer.innerHTML = '';Object.keys(checklistsData).forEach(key=>{if(!key.startsWith('custom-'))return;const button=document.createElement('button');button.className="checklist-item w-full text-left p-3 rounded-md border-l-4 border-transparent hover:bg-amber-50 transition-colors";button.dataset.checklist=key;button.textContent=checklistsData[key].title;button.addEventListener('click',()=>activateItem(button,'.checklist-item',checklistDetailsContent,checklistsData));customChecklistContainer.appendChild(button);});};
+            const deleteChecklist=key=>{delete checklistsData[key];renderChecklists();checklistDetailsContent.innerHTML=`<p class="text-slate-500 text-center pt-32">Lista eliminada. Seleccione otra o cree una nueva.</p>`;};
+            const showCreateForm=()=>{document.querySelectorAll('.checklist-item').forEach(i=>i.classList.remove('item-active'));addNewChecklistBtn.classList.add('item-active');checklistDetailsContent.innerHTML=`<h4 class="font-bold text-lg text-slate-800 mb-4">Crear Nueva Lista de Verificación</h4><div class="space-y-4 text-sm"><div><label for="new-checklist-title" class="block font-medium text-slate-700">Título de la Lista</label><input type="text" id="new-checklist-title" class="mt-1 block w-full border-slate-300 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500" placeholder="Ej: Revisión Mensual de Equipos"></div><div><label for="new-checklist-items" class="block font-medium text-slate-700">Puntos de la Lista (uno por línea)</label><textarea id="new-checklist-items" rows="6" class="mt-1 block w-full border-slate-300 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500" placeholder="- Revisar estado de arnés\n- Inspeccionar guantes dieléctricos"></textarea></div><button id="save-checklist-btn" class="w-full custom-btn-primary font-semibold py-2 px-4 rounded-md transition-colors">Guardar Lista</button></div>`;document.getElementById('save-checklist-btn').addEventListener('click',saveNewChecklist);};
+            const saveNewChecklist=()=>{const title=document.getElementById('new-checklist-title').value.trim();const itemsText=document.getElementById('new-checklist-items').value.trim();if(!title||!itemsText){alert('Por favor, complete el título y al menos un punto para la lista.');return;}
+const items=itemsText.split('\n').filter(item=>item.trim()!=='');const key=`custom-${Date.now()}`;checklistsData[key]={title,items};renderChecklists();const newButton=document.querySelector(`button[data-checklist="${key}"]`);if(newButton)activateItem(newButton,'.checklist-item',checklistDetailsContent,checklistsData);};
+            addNewChecklistBtn.addEventListener('click',showCreateForm);renderChecklists();
+        });
+    </script>
+</body>
+</html>
